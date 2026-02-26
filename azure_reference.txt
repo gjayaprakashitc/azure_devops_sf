@@ -103,12 +103,416 @@ Provide output in this format:
 
 
 
+Enterprise Salesforce Deployment Process — Azure DevOps (Real Production Model)
+
+Below is the actual enterprise-grade process used in large organizations running Salesforce DX with Azure DevOps.
+
+1️⃣ User Story Creation
+Owner
+
+Business Analyst / Product Owner
+
+Mandatory Details
+
+Business requirement
+
+Technical impact
+
+Salesforce components impacted
+
+Data impact
+
+Security impact
+
+Rollback consideration
+
+Test class requirement
+
+Acceptance Criteria (Enterprise format)
+Given <business scenario>
+When <action performed>
+Then <expected result>
+Definition of Ready (DoR)
+
+Story must contain:
+
+Clear acceptance criteria
+
+Impacted objects/components listed
+
+Test data requirements
+
+Security impact defined
+
+Deployment dependencies identified
+
+Business owner assigned
+
+2️⃣ Branching Strategy
+Model Used
+
+Enterprise GitFlow (controlled promotion)
+
+main      → Production
+UAT       → UAT releases
+QA        → QA integration
+Dev       → Development integration
+feature/* → User Story branches
+Branch Naming
+feature/US-1234-account-enhancement
+Creation
+
+Auto-created via Azure DevOps automation when User Story → Active.
+
+Merge Rules
+
+Feature → Dev via PR only.
+
+No direct commits to shared branches.
+
+3️⃣ Development Stage
+Owner
+
+Developer
+
+Sandbox
+
+Dedicated Dev Sandbox per developer.
+
+Responsibilities
+
+Develop metadata in sandbox.
+
+Retrieve using Salesforce DX.
+
+Update only source format.
+
+Metadata Covered
+
+Apex Classes / Triggers
+
+LWC / Aura
+
+Flows (version controlled)
+
+Permission Sets
+
+Custom Objects
+
+Validation Rules
+
+Profiles (minimal usage)
+
+Best Practice
+
+Prefer Permission Sets over Profiles.
+
+Avoid unmanaged profile changes.
+
+4️⃣ Version Control Stage
+Commit Process
+Developer → Feature Branch → Push
+PR Process
+
+PR created → Dev branch.
+
+Code Review
+
+Performed by:
+
+Dev Lead
+
+Senior Developer
+
+Approval Rules
+
+Minimum 2 approvals.
+
+Work Item linked mandatory.
+
+Pipeline validation required.
+
+5️⃣ Continuous Integration (CI)
+Trigger
+
+PR creation or commit.
+
+Pipeline Validation Steps
+
+Checkout full Git history.
+
+Install Salesforce CLI.
+
+Authenticate via JWT.
+
+Generate delta (optional enterprise optimization).
+
+Static code analysis:
+
+PMD (Apex)
+
+ESLint (LWC)
+
+SonarQube (optional enterprise gate).
+
+Run deployment validation:
+
+sf project deploy validate \
+ --source-dir force-app \
+ --test-level RunLocalTests
+Risk Controls
+
+PR merge blocked on failure.
+
+Code quality thresholds enforced.
+
+6️⃣ QA Deployment Stage
+Owner
+
+Release Pipeline + QA Team
+
+Process
+
+Merge Dev → QA via PR.
+
+Pipeline deploys artifact to QA.
+
+Deployment
+sf project deploy start \
+ --source-dir force-app \
+ --target-org qa \
+ --test-level RunLocalTests
+QA Validation
+
+Functional testing
+
+Integration testing
+
+Regression testing
+
+7️⃣ UAT Deployment Stage
+Approval Required
+
+QA Lead approval
+
+Business Owner approval
+
+Process
+
+PR QA → UAT.
+
+Pipeline validates work item fields.
+
+Mandatory:
+
+UAT Signoff = Yes
+Business Owner = Approved
+Deployment
+
+Same validated artifact promoted (no rebuild).
+
+8️⃣ Production Deployment Stage
+Release Approval Hierarchy
+
+Dev Lead
+
+QA Lead
+
+Release Manager
+
+Change Advisory Board (CAB)
+
+Business Owner
+
+Change Management
+
+Change ticket linked.
+
+Deployment window approved.
+
+Production Validation
+
+Test classes mandatory:
+
+sf project deploy validate \
+ --test-level RunSpecifiedTests \
+ --tests "TestClass1,TestClass2"
+Deployment
+
+Quick deploy from validation.
+
+9️⃣ Post Deployment Stage
+Smoke Testing
+
+Owner: QA + Business
+
+Checks:
+
+Login flows
+
+Critical objects
+
+Integrations
+
+Automation
+
+Monitoring
+
+Apex exception logs
+
+Flow errors
+
+Integration failures
+
+🔟 Approval Hierarchy
+Developer → Dev Lead → QA Lead → Release Manager → Business Owner → CAB
+1️⃣1️⃣ Azure DevOps Pipeline Structure
+Validate_DEV
+      ↓
+Deploy_QA
+      ↓
+Deploy_UAT
+      ↓
+Validate_PROD
+      ↓
+Manual Approval Gate
+      ↓
+Deploy_PROD
+Gates Used
+
+Environment approvals
+
+Work item validation
+
+Quality gate checks
+
+1️⃣2️⃣ Salesforce-Specific Controls
+Profiles & Permission Sets
+
+Deploy Permission Sets.
+
+Profiles only when unavoidable.
+
+Profile minimization enforced.
+
+Flows
+
+Activate via deployment.
+
+Version controlled.
+
+Naming standard required.
+
+Apex
+
+Minimum 85% org coverage enterprise target.
+
+Business-critical tests specified.
+
+Destructive Changes
+
+Separate destructiveChanges.xml
+
+Executed only in controlled release stage.
+
+1️⃣3️⃣ Rollback Strategy
+Strategy Used (Enterprise Standard)
+
+Previous release tagged in Git:
+
+release/prod-2026-02-26
+
+Rollback process:
+
+git checkout previous-tag
+deploy previous metadata
+Backup
+
+Metadata backup artifact stored per release.
+
+Data backup via scheduled export.
+
+1️⃣4️⃣ Security & Compliance
+Audit Tracking
+
+Every deployment linked to Work Item.
+
+PR history retained.
+
+Approval logs stored in Azure DevOps.
+
+Access Control
+
+Developers:
+
+No production access.
+
+Release Manager:
+
+Deployment permissions only.
+
+Service principal handles deployment.
+
+Enterprise Pipeline Flow Diagram
+User Story Created
+        ↓
+Assigned to Developer
+        ↓
+Auto Feature Branch Created
+        ↓
+Developer Commit
+        ↓
+PR → Dev
+        ↓
+CI Validation (PMD + Tests)
+        ↓
+Merge Dev
+        ↓
+Deploy QA
+        ↓
+QA Testing
+        ↓
+PR QA → UAT
+        ↓
+Business Validation + Signoff
+        ↓
+UAT Deploy
+        ↓
+Change Approval (CAB)
+        ↓
+Prod Validation
+        ↓
+Production Deploy
+        ↓
+Smoke Test + Monitoring
+Enterprise Best Practices (Mandatory)
+
+Single artifact promotion across environments.
+
+No rebuild after QA.
+
+JWT authentication only.
+
+Environment approvals mandatory.
+
+Work item governance enforced.
+
+Production deployments only from tagged releases.
+
+Automated validation gates.
+
+Separate destructive deployment control.
+
+Rollback pre-defined before release.
 
 
 
 
 
 
+
+
+------------------------------------------------------------------------------------------------------------------------------
 i want to setup whole project in azure devops from scrath ( userstory creation onwards, 
 assign to devloper  the user story. once assign automatically create feature branch
 create feature branch, update their code and create pull request and merge in to dev it should be validate and deployment
