@@ -1,3 +1,114 @@
+Act as a Senior Salesforce DevOps Architect working in a large enterprise using Azure DevOps.
+
+Provide a complete, real-world, production-level Salesforce deployment process using Azure DevOps from User Story creation to Production deployment.
+
+Requirements:
+- Do not guess or give generic answers.
+- Provide exact enterprise process followed in multi-level enterprise companies.
+- Provide stage-by-stage process in sequential order.
+- Include approvals, responsibilities, and tools used at each stage.
+- Include Azure DevOps pipeline stages and Salesforce deployment steps.
+- Include governance, compliance, and rollback strategy.
+- Include best practices and risk controls.
+
+Environment Structure:
+- Version Control: Azure DevOps Git
+- CI/CD Tool: Azure DevOps Pipelines
+- Salesforce Orgs: Dev Sandbox, QA Sandbox, UAT Sandbox, PreProd (optional), Production
+- Salesforce DX enabled
+
+Explain the process covering these phases:
+
+1. User Story Creation
+   - Who creates it
+   - What details must be included
+   - Acceptance criteria format
+   - Definition of Ready (DoR)
+
+2. Branching Strategy
+   - Which branching model is used (GitFlow or Trunk-Based)
+   - Branch naming standards
+   - How feature branches are created and merged
+
+3. Development Stage
+   - Developer responsibilities
+   - Sandbox usage
+   - Metadata handling
+   - Salesforce components covered (Apex, Flow, Profiles, Permission Sets, etc.)
+
+4. Version Control Stage
+   - How code is committed
+   - Pull Request process
+   - Code review process
+   - Approval hierarchy
+
+5. Continuous Integration (CI)
+   - Azure DevOps pipeline trigger
+   - Build validation steps
+   - Static code analysis (PMD, SonarQube)
+   - Test execution
+
+6. QA Deployment Stage
+   - Deployment process to QA sandbox
+   - Validation steps
+   - QA testing process
+
+7. UAT Deployment Stage
+   - Deployment approval process
+   - Business validation
+   - Sign-off process
+
+8. Production Deployment Stage
+   - Release approval hierarchy
+   - Change management process
+   - Deployment execution steps
+
+9. Post Deployment Stage
+   - Smoke testing
+   - Monitoring
+   - Rollback strategy
+
+10. Approval Hierarchy
+   - Developer approval
+   - Dev Lead approval
+   - QA approval
+   - Release Manager approval
+   - Business approval
+
+11. Azure DevOps Pipeline Structure
+   - Pipeline stages
+   - Validation stage
+   - Deployment stage
+   - Approval gates
+
+12. Salesforce-specific controls
+   - Handling Profiles and Permission Sets
+   - Handling Flows
+   - Handling Apex and Test Classes
+   - Handling Destructive Changes
+
+13. Rollback Strategy
+   - How rollback is handled
+   - Backup strategy
+
+14. Security and Compliance
+   - Audit tracking
+   - Access control
+
+Provide output in this format:
+- Step-by-step numbered process
+- Include responsibilities (Developer, QA, Release Manager, etc.)
+- Include Azure DevOps pipeline flow diagram (text format)
+- Include real enterprise best practices only
+
+
+
+
+
+
+
+
+
 i want to setup whole project in azure devops from scrath ( userstory creation onwards, 
 assign to devloper  the user story. once assign automatically create feature branch
 create feature branch, update their code and create pull request and merge in to dev it should be validate and deployment
